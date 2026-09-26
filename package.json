@@ -1,0 +1,53 @@
+{
+  "name": "growth-finance",
+  "version": "1.0.0",
+  "private": true,
+  "main": "expo-router/entry",
+  "scripts": {
+    "start": "expo start",
+    "web": "expo start --web",
+    "ios": "expo start --ios",
+    "build:web": "expo export --platform web",
+    "typecheck": "tsc --noEmit && tsc -p worker/tsconfig.json",
+    "test": "tsx --test tests/*.test.ts",
+    "api:dev": "node scripts/dev-api.mjs",
+    "build:api": "node scripts/build-worker.mjs",
+    "db:local": "wrangler d1 migrations apply growth-finance --local",
+    "setup": "node scripts/setup.mjs",
+    "cloudflare": "node scripts/cloudflare.mjs",
+    "secrets:push": "node scripts/secrets.mjs",
+    "deploy": "npm run build:web && node scripts/cloudflare.mjs deploy"
+  },
+  "dependencies": {
+    "@expo-google-fonts/dm-sans": "^0.4.2",
+    "@expo-google-fonts/space-mono": "^0.4.2",
+    "@react-native-async-storage/async-storage": "2.2.0",
+    "expo": "~57.0.25",
+    "expo-constants": "~57.0.19",
+    "expo-font": "~57.0.4",
+    "expo-linking": "~57.0.11",
+    "expo-router": "~57.0.23",
+    "expo-secure-store": "~57.0.4",
+    "expo-splash-screen": "~57.0.9",
+    "expo-status-bar": "~57.0.1",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-native": "0.86.3",
+    "react-native-reanimated": "4.5.1",
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-screens": "~4.26.0",
+    "react-native-svg": "15.15.4",
+    "react-native-web": "^0.21.2",
+    "react-native-worklets": "0.10.1"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "latest",
+    "@inquirer/prompts": "^8.7.2",
+    "@types/react": "~19.2.0",
+    "esbuild": "^0.25.12",
+    "prettier": "^3.9.9",
+    "tsx": "^4.20.0",
+    "typescript": "~5.9.2",
+    "wrangler": "^4.0.0"
+  }
+}

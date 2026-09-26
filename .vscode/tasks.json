@@ -1,0 +1,8 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {"label":"Growth Finance · Expo","type":"shell","command":"npm start","isBackground":true,"problemMatcher":[]},
+    {"label":"Growth Finance · Backend","type":"shell","command":"npm run api:dev","isBackground":true,"problemMatcher":[]},
+    {"label":"Growth Finance · Configure services","type":"shell","command":"npm run setup","problemMatcher":[]}
+  ]
+}

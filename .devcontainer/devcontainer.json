@@ -1,0 +1,12 @@
+{
+  "name": "Growth Finance only",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-24-bookworm",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/growth-finance,type=bind",
+  "workspaceFolder": "/workspaces/growth-finance",
+  "remoteUser": "node",
+  "runArgs": ["--cap-drop=ALL", "--security-opt=no-new-privileges"],
+  "forwardPorts": [8081, 8787],
+  "containerEnv": { "DEV_API_HOST": "0.0.0.0" },
+  "postCreateCommand": "npm ci",
+  "customizations": { "vscode": { "settings": { "git.autofetch": false } } }
+}

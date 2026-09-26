@@ -1,0 +1,9 @@
+{
+  "folders": [{ "name": "Growth Finance", "path": "." }],
+  "settings": {
+    "search.exclude": { "**/node_modules": true, "**/dist": true, "**/.wrangler": true },
+    "files.exclude": { "**/.expo": true },
+    "terminal.integrated.cwd": "${workspaceFolder}",
+    "typescript.tsdk": "node_modules/typescript/lib"
+  }
+}
