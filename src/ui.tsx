@@ -83,6 +83,21 @@ export function PixelMark({ size = 32 }: { size?: number }) {
     </Svg>
   );
 }
+const smallPixelGlyphs: Record<string, string[]> = {
+  A:['01110','10001','10001','11111','10001','10001','10001'], B:['11110','10001','10001','11110','10001','10001','11110'], C:['01111','10000','10000','10000','10000','10000','01111'], D:['11110','10001','10001','10001','10001','10001','11110'], E:['11111','10000','10000','11110','10000','10000','11111'], F:['11111','10000','10000','11110','10000','10000','10000'], G:['01111','10000','10000','10111','10001','10001','01110'], H:['10001','10001','10001','11111','10001','10001','10001'], I:['11111','00100','00100','00100','00100','00100','11111'], J:['00111','00010','00010','00010','00010','10010','01100'], K:['10001','10010','10100','11000','10100','10010','10001'], L:['10000','10000','10000','10000','10000','10000','11111'], M:['10001','11011','10101','10101','10001','10001','10001'], N:['10001','11001','10101','10011','10001','10001','10001'], O:['01110','10001','10001','10001','10001','10001','01110'], P:['11110','10001','10001','11110','10000','10000','10000'], Q:['01110','10001','10001','10001','10101','10010','01101'], R:['11110','10001','10001','11110','10100','10010','10001'], S:['01111','10000','10000','01110','00001','00001','11110'], T:['11111','00100','00100','00100','00100','00100','00100'], U:['10001','10001','10001','10001','10001','10001','01110'], V:['10001','10001','10001','10001','10001','01010','00100'], W:['10001','10001','10001','10101','10101','10101','01010'], X:['10001','10001','01010','00100','01010','10001','10001'], Y:['10001','10001','01010','00100','00100','00100','00100'], Z:['11111','00001','00010','00100','01000','10000','11111'],
+  '0':['01110','10001','10011','10101','11001','10001','01110'], '1':['00100','01100','00100','00100','00100','00100','01110'], '2':['01110','10001','00001','00010','00100','01000','11111'], '3':['11110','00001','00001','01110','00001','00001','11110'], '4':['00010','00110','01010','10010','11111','00010','00010'], '5':['11111','10000','10000','11110','00001','00001','11110'], '6':['01110','10000','10000','11110','10001','10001','01110'], '7':['11111','00001','00010','00100','01000','01000','01000'], '8':['01110','10001','10001','01110','10001','10001','01110'], '9':['01110','10001','10001','01111','00001','00001','01110'],
+  '[':['01111','01000','01000','01000','01000','01000','01111'], ']':['11110','00010','00010','00010','00010','00010','11110'], '+':['00000','00100','00100','11111','00100','00100','00000'], '-':['00000','00000','00000','11111','00000','00000','00000'], '.':['00000','00000','00000','00000','00000','00110','00110'], '/':['00001','00010','00100','01000','10000','00000','00000'], '$':['00100','01111','10100','01110','00101','11110','00100'], '%':['11001','11010','00100','01000','10110','01110','00000'], ':':['00000','00110','00110','00000','00110','00110','00000'],
+};
+export function PixelText({ text, color, scale = 1, uppercase = true, style }: { text: string; color?: string; scale?: number; uppercase?: boolean; style?: any }) {
+  const { colors: c } = useApp();
+  return <Text accessibilityLabel={text} style={[{
+    color: color || c.text,
+    fontFamily: 'PixeloidMono',
+    fontSize: Math.max(9, scale * 10),
+    lineHeight: Math.max(11, scale * 12),
+    letterSpacing: scale * 0.45,
+  }, style]}>{uppercase ? text.toUpperCase() : text}</Text>;
+}
 export function Button({
   children,
   onPress,
@@ -109,7 +124,7 @@ export function Button({
           minHeight: 44,
           paddingHorizontal: 16,
           paddingVertical: 11,
-          borderRadius: 10,
+          borderRadius: 4,
           flexDirection: 'row',
           gap: 9,
           alignItems: 'center',
@@ -117,6 +132,7 @@ export function Button({
           borderWidth: 1,
           borderColor: primary ? c.accent : c.border,
           backgroundColor: primary ? c.accent : hovered ? c.panel2 : 'transparent',
+          boxShadow: primary ? `3px 3px 0 ${c.accent}38` : 'none',
           opacity: disabled ? 0.45 : pressed ? 0.7 : 1,
         },
         style,
@@ -144,9 +160,10 @@ export function Card({
           backgroundColor: c.panel,
           borderWidth: 1,
           borderColor: c.border,
-          borderRadius: 16,
+          borderRadius: 4,
           padding: 24,
           gap: 18,
+          boxShadow: '4px 4px 0 rgba(0, 0, 0, 0.18)',
         },
         style,
       ]}
@@ -163,7 +180,7 @@ export function Tag({ children, color }: { children: React.ReactNode; color?: st
         alignSelf: 'flex-start',
         paddingHorizontal: 9,
         paddingVertical: 5,
-        borderRadius: 5,
+        borderRadius: 2,
         backgroundColor: c.panel2,
       }}
     >
@@ -196,7 +213,7 @@ export function Input({
       placeholderTextColor={c.muted}
       style={{
         padding: 14,
-        borderRadius: 9,
+        borderRadius: 3,
         borderWidth: 1,
         borderColor: c.border,
         color: c.text,
@@ -211,10 +228,15 @@ export function Page({ children }: { children: React.ReactNode }) {
   const { width } = useWindowDimensions();
   return (
     <ScrollView
+      // The shell reserves space for mobile navigation. A zero flex basis keeps
+      // this scroll view inside that space instead of flowing behind the tabs.
+      style={{ flexGrow: 1, flexShrink: 1, flexBasis: 0, minHeight: 0 }}
       contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={{
         padding: width > 1000 ? 36 : 20,
-        paddingBottom: 44,
+        // Compact navigation is 61px tall; reserve room so the final card can
+        // scroll entirely clear of it.
+        paddingBottom: width >= 960 ? 44 : 116,
         gap: 26,
         maxWidth: 1360,
         width: '100%',
@@ -237,6 +259,8 @@ export function Heading({
   action?: React.ReactNode;
 }) {
   const { colors: c } = useApp();
+  const { width } = useWindowDimensions();
+  const titleScale = width < 420 ? 2.2 : width < 720 ? 2.55 : 3;
   return (
     <View style={{ gap: 12 }}>
       <Txt mono size={10} color={c.muted}>
@@ -244,20 +268,22 @@ export function Heading({
       </Txt>
       <View
         style={{
-          flexDirection: 'row',
+          flexDirection: width < 720 ? 'column' : 'row',
           justifyContent: 'space-between',
-          alignItems: 'center',
+          alignItems: width < 720 ? 'flex-start' : 'center',
           gap: 12,
           flexWrap: 'wrap',
+          width: '100%',
         }}
       >
-        <View style={{ gap: 7 }}>
-          <Txt size={30} weight="700">
-            {title}
-            <Txt size={30} color={c.accent}>
-              .
-            </Txt>
-          </Txt>
+        <View style={{ gap: 7, flex: 1, minWidth: 0 }}>
+          <PixelText
+            text={`${title}.`}
+            color={c.text}
+            scale={titleScale}
+            uppercase={false}
+            style={{ letterSpacing: 0.5, flexShrink: 1 }}
+          />
           <Txt color={c.muted} size={13}>
             {subtitle}
           </Txt>

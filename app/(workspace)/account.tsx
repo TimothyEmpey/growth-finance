@@ -21,6 +21,7 @@ export default function Account() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { width } = useWindowDimensions();
+  const twoColumns = width >= 1180;
   async function connect() {
     await run(async () => {
       const d = await api<{ url: string }>('/connections/portal', {});
@@ -35,8 +36,8 @@ export default function Account() {
         title="Make yourself at home"
         subtitle="A few small settings. A view that’s entirely yours."
       />
-      <View style={{ flexDirection: width >= 1100 ? 'row' : 'column', gap: 20 }}>
-        <View style={{ flex: 1, gap: 20 }}>
+      <View style={{ flexDirection: twoColumns ? 'row' : 'column', gap: 20 }}>
+        <View style={{ flex: twoColumns ? 1 : undefined, minWidth: 0, gap: 20 }}>
           <Card>
             <Txt size={20} weight="700">
               {user
@@ -129,7 +130,7 @@ export default function Account() {
             </Txt>
           </Card>
         </View>
-        <View style={{ flex: 1, gap: 20 }}>
+        <View style={{ flex: twoColumns ? 1 : undefined, minWidth: 0, gap: 20 }}>
           <Card>
             <Txt size={18} weight="700">
               Set the mood

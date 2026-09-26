@@ -28,7 +28,13 @@ function Routes() {
   );
 }
 export default function Layout() {
-  useFonts({ DMSans_400Regular, SpaceMono_400Regular });
+  useFonts({
+    DMSans_400Regular,
+    SpaceMono_400Regular,
+    PixeloidSans: require('../assets/fonts/PixeloidSans-lxa3y.ttf'),
+    PixeloidMono: require('../assets/fonts/PixeloidMono-nAOpP.ttf'),
+    PixeloidSansBold: require('../assets/fonts/PixeloidSansBold-1jpBg.ttf'),
+  });
   return (
     <SafeAreaProvider>
       <Provider>

@@ -2,7 +2,6 @@ import React from 'react';
 import { View, useWindowDimensions } from 'react-native';
 import { useApp } from '../../src/store';
 import { Page, Heading, Card, Txt, Donut, Tag } from '../../src/ui';
-import { Ticker } from '../../src/news';
 import { allocation, total, money } from '../../src/finance';
 export default function Breakdown() {
   const { portfolio: p, colors: c } = useApp();
@@ -20,7 +19,6 @@ export default function Breakdown() {
         title="The bigger picture"
         subtitle="A closer look at how your portfolio fits together."
       />
-      <Ticker />
       <View style={{ flexDirection: width >= 1100 ? 'row' : 'column', gap: 18 }}>
         <Card style={{ flex: 1 }}>
           <Txt size={18} weight="700">

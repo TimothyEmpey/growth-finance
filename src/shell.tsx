@@ -3,7 +3,8 @@ import { View, Pressable, useWindowDimensions } from 'react-native';
 import { Slot, usePathname, router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useApp } from './store';
-import { Txt, Icon, PixelMark, Tag } from './ui';
+import { Txt, Icon, PixelMark, PixelText, Tag } from './ui';
+import { Ticker } from './news';
 const nav = [
   { path: '/', label: 'Portfolio', icon: 'portfolio' },
   { path: '/topics', label: 'Hot topics', icon: 'news' },
@@ -57,12 +58,8 @@ export function Shell() {
           <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center', paddingVertical: 8 }}>
             <PixelMark />
             <View>
-              <Txt size={19} weight="700">
-                growth
-              </Txt>
-              <Txt mono size={9} color={c.muted} style={{ letterSpacing: 3 }}>
-                FINANCE
-              </Txt>
+              <PixelText text="GROWTH" color={c.text} scale={2.25} />
+              <PixelText text="FINANCE" color={c.muted} scale={1} />
             </View>
           </View>
           <View style={{ gap: 6 }}>
@@ -133,7 +130,7 @@ export function Shell() {
           ) : (
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 9 }}>
               <PixelMark size={21} />
-              <Txt weight="700">growth finance</Txt>
+              <PixelText text="GROWTH FINANCE" color={c.text} scale={1.3} />
             </View>
           )}
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
@@ -152,7 +149,10 @@ export function Shell() {
             </Txt>
           </Pressable>
         )}
-        <Slot />
+        <Ticker />
+        <View style={{ flex: 1, minHeight: 0 }}>
+          <Slot />
+        </View>
         {!wide && (
           <View
             style={{

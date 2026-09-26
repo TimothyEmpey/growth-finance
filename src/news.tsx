@@ -1,19 +1,28 @@
-import React, { useEffect, useRef } from 'react';
-import { View, ScrollView, Animated, AccessibilityInfo, Pressable, Linking } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, ScrollView, Animated, AccessibilityInfo, Pressable, Linking, Easing } from 'react-native';
 import { useApp } from './store';
-import { Txt, Tag, Icon, Card } from './ui';
+import { Txt, Tag, Icon, Card, PixelText } from './ui';
 import { money, percent } from './finance';
 import { Article } from '../shared/types';
 export function Ticker() {
   const { portfolio, colors: c, isDemo } = useApp();
   const x = useRef(new Animated.Value(0)).current;
+  const [trackWidth, setTrackWidth] = useState(0);
   useEffect(() => {
     let animation: Animated.CompositeAnimation | undefined;
     let active = true;
+    if (!trackWidth) return;
+    x.setValue(0);
     AccessibilityInfo.isReduceMotionEnabled().then((reduced) => {
       if (!reduced && active) {
         animation = Animated.loop(
-          Animated.timing(x, { toValue: -600, duration: 26000, useNativeDriver: true }),
+          Animated.timing(x, {
+            toValue: -trackWidth,
+            duration: Math.max(18000, trackWidth * 22),
+            easing: Easing.linear,
+            useNativeDriver: false,
+          }),
+          { resetBeforeIteration: true },
         );
         animation.start();
       }
@@ -22,35 +31,57 @@ export function Ticker() {
       active = false;
       animation?.stop();
     };
-  }, []);
+  }, [trackWidth, x]);
+  const tape = portfolio.positions.map((p, i) => (
+    <View
+      key={`${p.id}-${i}`}
+      style={{
+        flexDirection: 'row',
+        gap: 12,
+        alignItems: 'center',
+        paddingHorizontal: 16,
+        borderRightWidth: 1,
+        borderRightColor: c.border,
+      }}
+    >
+      <PixelText text={p.symbol} color="#f1f6f8" scale={1.35} />
+      <PixelText text={money(p.price, p.currency)} color="#f1f6f8" scale={1.25} />
+      {isDemo && (
+        <PixelText
+          text={`${(p.change ?? 0) >= 0 ? '+' : '-'}${percent(p.change)?.replace(/^[+-]/, '') || ''}`}
+          color={(p.change ?? 0) >= 0 ? '#5dff38' : '#ff4054'}
+          scale={1.2}
+        />
+      )}
+    </View>
+  ));
   return (
     <View
       style={{
         overflow: 'hidden',
-        paddingVertical: 14,
-        backgroundColor: c.panel,
-        borderTopWidth: 1,
-        borderBottomWidth: 1,
+        paddingVertical: 8,
+        backgroundColor: c.bg,
+        borderTopWidth: 2,
+        borderBottomWidth: 2,
         borderColor: c.border,
       }}
     >
-      <Animated.View style={{ flexDirection: 'row', gap: 32, transform: [{ translateX: x }] }}>
-        {[...portfolio.positions, ...portfolio.positions].map((p, i) => (
-          <View key={i} style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
-            <Txt mono size={12}>
-              {p.symbol}
-            </Txt>
-            <Txt mono size={12} color={c.accent}>
-              {money(p.price, p.currency)}
-            </Txt>
-            {isDemo && (
-              <Txt mono size={10} color={(p.change ?? 0) >= 0 ? c.accent : c.red}>
-                {percent(p.change)}
-              </Txt>
-            )}
-            <Txt color={c.border}>◆</Txt>
-          </View>
-        ))}
+      <Animated.View
+        style={{
+          flexDirection: 'row',
+          width: trackWidth ? trackWidth * 2 : undefined,
+          transform: [{ translateX: x }],
+        }}
+      >
+        <View
+          onLayout={(event) => setTrackWidth(Math.ceil(event.nativeEvent.layout.width))}
+          style={{ flexDirection: 'row' }}
+        >
+          {tape}
+        </View>
+        <View style={{ flexDirection: 'row' }} aria-hidden>
+          {tape}
+        </View>
       </Animated.View>
     </View>
   );
